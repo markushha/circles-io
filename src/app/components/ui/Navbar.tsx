@@ -11,9 +11,11 @@ function Navbar() {
   }
 
   return (
-    <div className="w-full h-16 flex items-center p-8 shadow-lg text-slate-950 font-semibold dark:text-slate-200 bg-slate-100 dark:bg-slate-800 shadow-xl">
-      <div className="w-[70%] h-[100vh] mx-auto flex items-center justify-center">
-        <div className="mr-auto"></div>
+    <div className="w-full fixed top-0 left-0 h-16 flex items-center p-6 lg:p-8 shadow-lg text-slate-950 font-semibold dark:text-slate-200 bg-slate-100 dark:bg-slate-800 shadow-xl">
+      <div className="lg:w-[70%] md:w-[85%] w-full h-[100vh] mx-auto flex items-center justify-center">
+        <div className="mr-auto text-lg lg:text-2xl">
+          Circles.io <span>by</span> <a target="_blank" href="https://github.com/markushha"><code>markushha</code></a>
+        </div>
         <div className="ml-auto">
           <Switch onClick={toggleHandler} />
         </div>
