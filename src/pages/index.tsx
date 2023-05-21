@@ -1,5 +1,6 @@
 import Layout from "@/app/components/layout/Layout";
 import Canvas from "@/app/components/ui/Canvas";
+import PerfectCircle from "@/app/components/ui/PerfectCircle";
 
 export default function Home() {
   return (
@@ -8,7 +9,8 @@ export default function Home() {
       description="Can you draw a circle?"
     >
       <div className="w-full h-[40vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center">
-        <Canvas />
+        {/* <Canvas /> */}
+        <PerfectCircle />
       </div>
     </Layout>
   );
