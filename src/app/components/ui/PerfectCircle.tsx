@@ -1,20 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
+
+interface Coordinate {
+  x: number;
+  y: number;
+}
 
 export default function PerfectCircle() {
-  const canvasRef = useRef(null);
-  const [drawingCoordinates, setDrawingCoordinates] = useState({ x: 0, y: 0 });
-  const [error, setError] = useState('');
-  const [circleQuality, setCircleQuality] = useState(100);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [pathCoordinates, setPathCoordinates] = useState([]);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [drawingCoordinates, setDrawingCoordinates] = useState<Coordinate>({
+    x: 0,
+    y: 0,
+  });
+  const [error, setError] = useState<string>("");
+  const [circleQuality, setCircleQuality] = useState<number>(100);
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
+  const [pathCoordinates, setPathCoordinates] = useState<Coordinate[]>([]);
 
-  const canvasSize = 250; // Adjust the canvas size as needed
-  const dotRadius = 5; // Adjust the dot radius as needed
+  const canvasSize = 800; // Adjust the canvas size as needed
+  const dotRadius = 10; // Adjust the dot radius as needed
   const idealRadius = canvasSize / 2 - dotRadius; // Calculate the ideal radius based on canvas size and dot radius
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -25,7 +35,7 @@ export default function PerfectCircle() {
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, dotRadius, 0, Math.PI * 2);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = "black";
     ctx.fill();
 
     // Draw the user's drawing path
@@ -33,7 +43,7 @@ export default function PerfectCircle() {
     pathCoordinates.forEach(({ x, y }) => {
       ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
     ctx.stroke();
   }, [pathCoordinates]);
@@ -43,7 +53,7 @@ export default function PerfectCircle() {
     setPathCoordinates([]);
   };
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = event.nativeEvent;
     setDrawingCoordinates({ x: offsetX, y: offsetY });
 
@@ -63,7 +73,7 @@ export default function PerfectCircle() {
         (drawingCoordinates.y - canvasSize / 2) ** 2
     );
 
-    if (drawingRadius < dotRadius) {
+    if (drawingRadius - 100 < dotRadius) {
       setError('Drawing too close to the dot!');
     } else {
       setError('');
@@ -74,8 +84,8 @@ export default function PerfectCircle() {
       ((idealRadius - difference) / idealRadius) * 100
     );
     setCircleQuality(qualityPercentage);
-  };
-  
+  };;
+
   return (
     <div className="flex flex-col items-center justify-center w-full h-[100vh]">
       <canvas
@@ -84,8 +94,8 @@ export default function PerfectCircle() {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        width={800}
-        height={800}
+        width={canvasSize}
+        height={canvasSize}
       />
       <div className="error-message">{error}</div>
       <div className="circle-quality">{circleQuality}%</div>
