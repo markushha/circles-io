@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 interface Coordinate {
   x: number;
@@ -6,17 +7,19 @@ interface Coordinate {
 }
 
 export default function PerfectCircle() {
+  const theme = useSelector((state: any) => state.theme)
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [drawingCoordinates, setDrawingCoordinates] = useState<Coordinate>({
     x: 0,
     y: 0,
   });
   const [error, setError] = useState<string>("");
-  const [circleQuality, setCircleQuality] = useState<number>(100);
+  const [circleQuality, setCircleQuality] = useState<number>(0);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [pathCoordinates, setPathCoordinates] = useState<Coordinate[]>([]);
 
-  const canvasSize = 800; // Adjust the canvas size as needed
+  const canvasSize = 600; // Adjust the canvas size as needed
   const dotRadius = 10; // Adjust the dot radius as needed
   const idealRadius = canvasSize / 2 - dotRadius; // Calculate the ideal radius based on canvas size and dot radius
 
@@ -35,7 +38,7 @@ export default function PerfectCircle() {
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, dotRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "black";
+    ctx.fillStyle = theme.value === "dark" ? "white" : "black";
     ctx.fill();
 
     // Draw the user's drawing path
@@ -43,10 +46,10 @@ export default function PerfectCircle() {
     pathCoordinates.forEach(({ x, y }) => {
       ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = theme.value === "dark" ? "white" : "black";
+    ctx.lineWidth = 4;
     ctx.stroke();
-  }, [pathCoordinates]);
+  }, [pathCoordinates, theme]);
 
   const handleMouseDown = () => {
     setIsDrawing(true);
@@ -97,8 +100,8 @@ export default function PerfectCircle() {
         width={canvasSize}
         height={canvasSize}
       />
-      <div className="error-message">{error}</div>
-      <div className="circle-quality">{circleQuality}%</div>
+      <div className="error-message text-xl text-rose-500 mt-4 font-bold"><code>{error}</code></div>
+      <div className="text-2xl mt-4 font-bold"><code>Accuracy: {circleQuality}%</code></div>
     </div>
   );
 }
