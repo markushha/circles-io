@@ -84,7 +84,7 @@ export default function PerfectCircle() {
       ((idealRadius - difference) / idealRadius) * 100
     );
     setCircleQuality(qualityPercentage);
-  };;
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-[100vh]">
