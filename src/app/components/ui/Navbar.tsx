@@ -1,6 +1,7 @@
 import { toggleTheme } from "@/app/redux/theme/themeSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { Switch } from "./shadcn/switch"
+import { AiFillGithub } from "react-icons/ai"
 
 function Navbar() {
   const dispatch = useDispatch()
@@ -12,11 +13,15 @@ function Navbar() {
 
   return (
     <div className="w-full fixed top-0 left-0 h-16 flex items-center p-6 lg:p-8 shadow-lg text-slate-950 font-semibold dark:text-slate-200 bg-slate-100 dark:bg-slate-800 shadow-xl">
-      <div className="lg:w-[70%] md:w-[85%] w-full mx-auto flex items-center justify-center">
-        <div className="mr-auto text-lg lg:text-2xl">
-          Circles.io <span>by</span> <a target="_blank" href="https://github.com/markushha"><code>markushha</code></a>
+      <div className="lg:w-[70%] md:w-[85%] w-full mx-auto flex items-center justify-between">
+        <div className="text-lg lg:text-2xl">
+          Circles.io
         </div>
-        <div className="ml-auto">
+          <a className="flex items-center text-xl lg:text-2xl" target="_blank" href="https://github.com/markushha">
+            <AiFillGithub size={32} color={ theme.value === "dark" ? "white" : "black" } />
+            <code className="ml-2">markushha</code>
+          </a>
+        <div className="">
           <Switch onClick={toggleHandler} />
         </div>
       </div>
