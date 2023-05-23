@@ -20,9 +20,9 @@ export default function PerfectCircle() {
   const [pathCoordinates, setPathCoordinates] = useState<Coordinate[]>([]);
   const [timer, setTimer] = useState<number>(0);
 
-  const dotRadius = 10; // Adjust the dot radius as needed
-  const tolerance = 20; // Adjust the tolerance for determining closed curve
-  const drawingTimeLimit = 5000; // 5 seconds
+  const dotRadius = 10;
+  const tolerance = 20;
+  const drawingTimeLimit = 5000;
 
   useEffect(() => {
     const canvas = canvasRef.current;
