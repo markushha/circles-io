@@ -31,9 +31,6 @@ function Layout({ children, seoTitle, description }: ILayout) {
         </div>
       </div>
       </main>
-      <footer>
-
-      </footer>
     </div>
   );
 }
