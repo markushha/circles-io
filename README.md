@@ -14,6 +14,7 @@
 - I used the same trigonomentry to calculate errors, especially with the problem of drawing close to the dot
 
 ### Bugs or what to fix
+- Implement methods & functions to make able to draw on mobile phones (it's adaptive, but you can't draw yet)
 - I need to create methods to check if the user is drawing complete circle
 - I need to improve method of coloring line in red, because at the moment it's not working 100% correctly
 - Need to separate all logic into hook.ts. I already created a file but due to time limit it's not separated yet
