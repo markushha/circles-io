@@ -7,7 +7,7 @@ interface Coordinate {
 }
 
 export default function PerfectCircle() {
-  const theme = useSelector((state: any) => state.theme)
+  const theme = useSelector((state: any) => state.theme);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [drawingCoordinates, setDrawingCoordinates] = useState<Coordinate>({
@@ -22,6 +22,7 @@ export default function PerfectCircle() {
   const canvasSize = 600; // Adjust the canvas size as needed
   const dotRadius = 10; // Adjust the dot radius as needed
   const idealRadius = canvasSize / 2 - dotRadius; // Calculate the ideal radius based on canvas size and dot radius
+  const tolerance = 20; // Adjust the tolerance for determining closed curve
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,15 +42,43 @@ export default function PerfectCircle() {
     ctx.fillStyle = theme.value === "dark" ? "white" : "black";
     ctx.fill();
 
+    // Draw the accuracy text
+    // ctx.fillStyle = theme.value === "dark" ? "white" : "black";
+    ctx.font = "bold 32px";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const accuracyText = circleQuality % 1 === 0 ? `${circleQuality.toFixed(1)}%` : `${circleQuality}%`;
+
+    // Calculate the gradient color based on the percentage
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, "red");
+    gradient.addColorStop(1, theme.value === "dark" ? "white" : "black");
+    ctx.fillStyle = gradient;
+
+    ctx.fillText(accuracyText, centerX, centerY + 40);
+
     // Draw the user's drawing path
     ctx.beginPath();
-    pathCoordinates.forEach(({ x, y }) => {
-      ctx.lineTo(x, y);
+    pathCoordinates.forEach(({ x, y }, index) => {
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
     });
-    ctx.strokeStyle = theme.value === "dark" ? "white" : "black";
+
+    // Set the line color based on the percentage
+    const lineColor = gradient;
+    ctx.strokeStyle = lineColor;
+
     ctx.lineWidth = 4;
     ctx.stroke();
-  }, [pathCoordinates, theme]);
+
+    // Check if the user has drawn something
+    if (pathCoordinates.length === 0 && !isDrawing) {
+      setError("Draw something!");
+    }
+  }, [drawingCoordinates, isDrawing, pathCoordinates, circleQuality, theme]);
 
   const handleMouseDown = () => {
     setIsDrawing(true);
@@ -65,6 +94,15 @@ export default function PerfectCircle() {
         ...prevCoordinates,
         { x: offsetX, y: offsetY },
       ]);
+
+      const drawingRadius = Math.sqrt(
+        (offsetX - canvasSize / 2) ** 2 + (offsetY - canvasSize / 2) ** 2
+      );
+      const difference = Math.abs(idealRadius - drawingRadius);
+      const accuracyPercentage = Math.round(
+        ((idealRadius - difference) / idealRadius) * 1000
+      ) / 10; // One decimal point
+      setCircleQuality(accuracyPercentage);
     }
   };
 
@@ -76,17 +114,14 @@ export default function PerfectCircle() {
         (drawingCoordinates.y - canvasSize / 2) ** 2
     );
 
-    if (drawingRadius - 100 < dotRadius) {
-      setError('Drawing too close to the dot!');
-    } else {
-      setError('');
-    }
+    console.log(drawingRadius, dotRadius ** 2)
 
-    const difference = Math.abs(idealRadius - drawingRadius);
-    const qualityPercentage = Math.round(
-      ((idealRadius - difference) / idealRadius) * 100
-    );
-    setCircleQuality(qualityPercentage);
+    if (drawingRadius - tolerance < dotRadius + 120) {
+      setError("Drawing too close to the dot!");
+      setCircleQuality(0);
+    } else {
+      setError("");
+    }
   };
 
   return (
@@ -100,8 +135,9 @@ export default function PerfectCircle() {
         width={canvasSize}
         height={canvasSize}
       />
-      <div className="error-message text-xl text-rose-500 mt-4 font-bold"><code>{error}</code></div>
-      <div className="text-2xl mt-4 font-bold"><code>Accuracy: {circleQuality}%</code></div>
+      <div className="error-message text-xl text-rose-500 mt-4 font-bold">
+        {error ? <code>{error}</code> : null}
+      </div>
     </div>
   );
 }
