@@ -18,11 +18,13 @@ export default function PerfectCircle() {
   const [circleQuality, setCircleQuality] = useState<number>(0);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [pathCoordinates, setPathCoordinates] = useState<Coordinate[]>([]);
+  const [timer, setTimer] = useState<number>(0);
 
-  const canvasSize = 600; // Adjust the canvas size as needed
-  const dotRadius = 10; // Adjust the dot radius as needed
-  const idealRadius = canvasSize / 2 - dotRadius; // Calculate the ideal radius based on canvas size and dot radius
-  const tolerance = 20; // Adjust the tolerance for determining closed curve
+  const canvasSize = 600;
+  const dotRadius = 10;
+  const idealRadius = canvasSize / 2 - dotRadius;
+  const tolerance = 20;
+  const drawingTimeLimit = 5000;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -44,10 +46,10 @@ export default function PerfectCircle() {
 
     // Draw the accuracy text
     // ctx.fillStyle = theme.value === "dark" ? "white" : "black";
-    ctx.font = "bold 32px";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    const accuracyText = circleQuality % 1 === 0 ? `${circleQuality.toFixed(1)}%` : `${circleQuality}%`;
+    // ctx.font = "bold 34px";
+    // ctx.textAlign = "center";
+    // ctx.textBaseline = "middle";
+    // const accuracyText = circleQuality % 1 === 0 ? `${circleQuality.toFixed(1)}%` : `${circleQuality}%`;
 
     // Calculate the gradient color based on the percentage
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -55,7 +57,7 @@ export default function PerfectCircle() {
     gradient.addColorStop(1, theme.value === "dark" ? "white" : "black");
     ctx.fillStyle = gradient;
 
-    ctx.fillText(accuracyText, centerX, centerY + 40);
+    // ctx.fillText( centerX, centerY + 40);
 
     // Draw the user's drawing path
     ctx.beginPath();
@@ -79,6 +81,29 @@ export default function PerfectCircle() {
       setError("Draw something!");
     }
   }, [drawingCoordinates, isDrawing, pathCoordinates, circleQuality, theme]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (isDrawing) {
+      setTimer(0);
+
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 100);
+      }, 100);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isDrawing]);
+
+  useEffect(() => {
+    if (timer >= drawingTimeLimit) {
+      setIsDrawing(false);
+      setError("Too slow!");
+    }
+  }, [timer]);
 
   const handleMouseDown = () => {
     setIsDrawing(true);
@@ -135,8 +160,8 @@ export default function PerfectCircle() {
         width={canvasSize}
         height={canvasSize}
       />
-      <div className="error-message text-xl text-rose-500 mt-4 font-bold">
-        {error ? <code>{error}</code> : null}
+      <div className="error-message text-2xl lg:text-3xl text-emerald-400 dark:text-rose-200 mt-4 font-bold">
+        {error ? <code>{error}</code> : <code>{circleQuality}%</code>}
       </div>
     </div>
   );
