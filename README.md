@@ -27,7 +27,7 @@
 
 ### Dependencies
 
-The PerfectCircle app utilizes the following dependencies:
+The circles-io app utilizes the following dependencies:
 
 - React: JavaScript library for building user interfaces
 - Redux: State management library for React applications
