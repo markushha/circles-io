@@ -35,8 +35,8 @@ The circles-io app utilizes the following dependencies:
 ### To run this app, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/markushha/circles-io.git`
-2. Install the dependencies: `npm install`
-3. Start the development server: `npm start`
+2. Install the dependencies: `npm install` or `yarn`
+3. Start the development server: `npm run dev` or `yarn dev`
 4. Open the app in your browser at `http://localhost:3000`
 
 ### Contributing
